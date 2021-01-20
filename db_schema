@@ -1,0 +1,128 @@
+CREATE DATABASE gopalsons
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'English_United States.1252'
+    LC_CTYPE = 'English_United States.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+	
+CREATE TABLE public.ref_user_type
+(
+    user_typecode char(1) PRIMARY KEY NOT NULL,
+    user_typedesc VARCHAR(20) NOT NULL
+)
+
+CREATE TABLE public.users
+(
+    user_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_fname character varying(50) ,
+    user_lname character varying(50),
+    user_gender character(7) ,
+    user_dob date,
+    user_emailaddr character varying(50) NOT NULL UNIQUE,
+    user_mobileno character varying(16)  NOT NULL,
+    user_password text  NOT NULL,
+    user_typecode character(1) REFERENCES public.ref_usEr_type (user_typecode) ,
+    user_verified boolean,
+    user_discount character varying(10) ,
+    user_datetimecreated time without time zone,
+    CHECK (user_dob > '1900-01-01'::date)
+)
+
+
+CREATE TABLE public.ref_address_type
+(
+    addr_type_code character(1) NOT NULL PRIMARY KEY,
+    addr_type_description character varying(10)  NOT NULL
+)
+
+
+CREATE TABLE public.user_address
+(
+    addr_id integer  NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY ,
+    user_id integer NOT NULL REFERENCES public.users (user_id),
+    addr_serial smallint NOT NULL,
+    addr_type_code character(1) COLLATE pg_catalog."default" NOT NULL REFERENCES public.ref_address_type (addr_type_code),
+    addr_line1 character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    addr_line2 character varying(40) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
+    addr_line3 character varying(40) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
+    addr_city character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    addr_state character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    addr_pincode character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    addr_country character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    addr_datetimecreated timestamp without time zone,
+    addr_datetill timestamp without time zone
+ )
+ 
+ 
+ 
+ CREATE TABLE public.product_category
+(
+    prod_category_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    prod_category character varying(50) UNIQUE COLLATE pg_catalog."default",
+    prod_category_datetill timestamp without time zone
+   
+)
+
+CREATE TABLE public.product_sub_category
+(
+    prod_subcategory_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    prod_category_id integer NOT NULL REFERENCES public.product_category (prod_category_id),
+    prod_subcategory_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    prod_subcategory_desc text COLLATE pg_catalog."default"
+    
+)
+
+CREATE TABLE public.ref_colour
+(
+    colour_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	colour_code character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    colour_value character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    colour_datetill timestamp without time zone
+    
+)
+
+CREATE TABLE public.ref_size
+(
+    size_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	size_code character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    size_value character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    prod_subcategory_id integer NOT NULL REFERENCES public.product_sub_category (prod_subcategory_id),
+    size_datetill timestamp without time zone
+    
+ )
+
+CREATE TABLE public.ref_brand
+(
+	brand_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	brand_code character varying(20) COLLATE pg_catalog."default" NOT NULL,
+	brand_value character varying(50) COLLATE pg_catalog."default" NOT NULL,
+	brand_datetill timestamp without time zone
+)
+
+CREATE TABLE public.variation
+(
+	variation_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	variation_name VARCHAR(50) NOT NULL UNIQUE
+)
+
+CREATE TABLE public.variation_value
+(
+	variation_value_id INT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	variation_id INT NOT NULL REFERENCES public.variation (variation_id),
+	prod_subcategory_id INT NOT NULL REFERENCES public.product_sub_category (prod_subcategory_id),
+	varient_name VARCHAR(50),
+	CONSTRAINT uc_variation_val unique (prod_subcategory_id,varient_name)
+)
+
+CREATE TABLE public.product
+(
+    prod_id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    prod_subcategory_id integer REFERENCES public.product_sub_category (prod_subcategory_id),
+	prod_brand_id INT REFERENCES public.ref_brand(brand_id),
+	prod_stylecode character varying(100) COLLATE pg_catalog."default" UNIQUE,
+    prod_datetill timestamp without time zone,
+    prod_datetimeinserted timestamp without time zone
+     
+   )
