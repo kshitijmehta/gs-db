@@ -126,3 +126,52 @@ CREATE TABLE public.product
     prod_datetimeinserted timestamp without time zone
      
    )
+
+CREATE TABLE product_detail(
+	  prod_detail_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+	, sku VARCHAR(20) UNIQUE
+	, prod_id INT REFERENCES public.product(prod_id)
+	, colour_id INT REFERENCES public.ref_colour(colour_id)
+	, prod_detail_name VARCHAR(50)
+	, prod_detail_desc TEXT
+	, prod_detail_price NUMERIC(7,2)
+	, prod_previewimg_path TEXT
+)
+
+CREATE TABLE product_image (
+	  prod_image_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+	, prod_details_id INT NOT NULL REFERENCES public.product_detail(prod_detail_id)
+	, prod_image_name VARCHAR(30) NOT NULL
+	, prod_image_path TEXT NOT NULL
+	, isFeatured BOOL NOT NULL
+)
+
+CREATE TABLE product_size(
+	  ps_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+	, prod_detail_id INT NOT NULL REFERENCES public.product_detail(prod_detail_id)
+	, size_id INT NOT NULL REFERENCES public.ref_size(size_id)
+	, qty SMALLINT NOT NULL CHECK (qty >= 0)
+)
+
+CREATE TABLE product_variation(
+	prod_variation_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+	, prod_detail_id INT NOT NULL REFERENCES public.product_detail(prod_detail_id)
+	, variation_value_id INT NOT NULL REFERENCES public.variation_value(variation_value_id)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
