@@ -1,0 +1,20 @@
+CREATE PROCEDURE public.spprodsubcategoryinsertupdatedelete(_ser integer, _categoryid integer, _name character varying, _desc text
+														   ,_subcateg_id int default null::int)
+    LANGUAGE plpgsql
+    AS $$
+
+ 
+
+    BEGIN
+        IF _ser=1 THEN
+            INSERT INTO product_sub_category (prod_category_id,prodsubcategory_name,prodsubcategory_desc)
+            VALUES (_categoryid, _name, _desc);
+            
+        ELSEIF _ser= 2 THEN
+            UPDATE product_sub_category
+            SET prod_subcategory_name=_name,
+                prod_subcategory_desc=_desc
+            WHERE prod_subcateg_id = _subcateg_id;
+        END IF;
+    END
+$$;
