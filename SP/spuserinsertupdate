@@ -1,0 +1,46 @@
+CREATE PROCEDURE public.spuserinsertupdate(_ser integer, _email character varying, _mobileno character varying
+										   , _pwd text, _typecode character, _fname character varying DEFAULT NULL::character varying
+										   , _lname character varying DEFAULT NULL::character varying
+										   , _gender character DEFAULT NULL::bpchar, _dob date DEFAULT NULL::date
+										   , _verified boolean DEFAULT false, _discount character varying DEFAULT NULL::character varying)
+    LANGUAGE plpgsql
+    AS $$
+
+	BEGIN
+	    -- Add user
+		IF _ser= 1 THEN
+			INSERT INTO users (user_emailaddr, user_mobileno, user_password, user_typecode, user_datetimecreated)
+			VALUES (_email, _mobileno, _pwd, _typecode ,now());
+			
+	    -- Update user
+		ELSEIF _ser= 2 THEN
+			UPDATE users
+			SET user_fname = _fname,
+				user_lname = _lname,
+				user_gender = _gender,
+				user_dob = _dob,
+				user_mobileno = _mobileno
+			WHERE user_emailaddr = _email;
+			
+		-- Update password
+		ELSEIF _ser= 3 THEN
+			UPDATE users
+			SET user_password = _pwd
+			WHERE user_emailaddr = _email;
+			
+		-- Update verified
+		ELSEIF _ser= 4 THEN
+			UPDATE users
+			SET user_verified = _verified
+			WHERE user_emailaddr = _email;
+			
+		-- Update discount
+		ELSEIF _ser= 5 THEN
+			UPDATE users
+			SET user_discount = _discount
+			WHERE user_emailaddr = _email;
+
+		END IF;
+				
+	END 
+$$;
