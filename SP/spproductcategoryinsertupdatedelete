@@ -1,0 +1,29 @@
+CREATE PROCEDURE public.spproductcategoryinsertupdatedelete(_ser integer, _categoryname character varying
+														   , INOUT category_id int DEFAULT NULL::INT)
+														   
+    LANGUAGE plpgsql
+    AS $$
+
+	BEGIN
+	
+		IF _ser =1 THEN
+			
+			INSERT INTO product_category (prod_category)
+			VALUES(_categoryName);
+		END IF;
+		
+		IF _ser = 2 THEN
+			UPDATE product_category
+				SET prod_category = _categoryname
+			WHERE prod_category_id = category_id;
+		END IF;
+		
+		IF _ser = 3 THEN
+			UPDATE product_category
+			SET prod_category_datetill = now()
+			WHERE prod_category_id = category_id;
+		END IF;
+	
+	END
+
+$$;
