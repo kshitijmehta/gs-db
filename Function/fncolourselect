@@ -1,0 +1,14 @@
+CREATE FUNCTION public.fncolourselect() RETURNS TABLE(col_id integer, col_code character varying
+													  , col_value character varying)
+    LANGUAGE plpgsql
+    AS $$
+
+BEGIN
+	
+	RETURN QUERY
+	SELECT colour_id, colour_code, colour_value from ref_colour
+	WHERE colour_datetill is null;
+
+END
+
+$$;
