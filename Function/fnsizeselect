@@ -1,0 +1,17 @@
+CREATE FUNCTION public.fnsizeselect() RETURNS TABLE(s_id integer, s_code character varying, s_value character varying
+													, prod_subcategory integer, prod_categoryname character varying)
+    LANGUAGE plpgsql
+    AS $$
+
+BEGIN
+	
+	RETURN QUERY
+	SELECT size_id, size_code, size_value, a.prod_subcategory_id,b.prod_subcategory_name from ref_size a
+	inner join product_sub_category b on a.prod_subcategory_id = b.prod_subcategory_id
+	WHERE a.size_datetill is null;
+
+END
+
+$$;
+
+
