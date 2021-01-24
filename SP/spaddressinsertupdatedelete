@@ -1,0 +1,31 @@
+CREATE PROCEDURE public.spaddressinsertupdatedelete(_ser integer, _userid integer, _addrserial integer, _typecode character
+													, _line1 character varying, _line2 character varying, _line3 character varying
+													, _city character varying, _state character varying, _pincode character varying
+													, _country character varying, INOUT _addressid numeric DEFAULT NULL::numeric)
+    LANGUAGE plpgsql
+    AS $$
+
+begin 
+	if _ser =1 then
+		
+		insert into user_address (user_id, addr_serial, addr_type_code, addr_line1, addr_line2, addr_line3, 
+								addr_city, addr_state, addr_pincode,addr_country, addr_datetimecreated)
+		values (_userid, _addrserial, _typecode, _line1, _line2, _line3, _city, _state, _pincode,
+			   _country, now()) returning addr_id into _addressId;
+	
+	end if;
+	
+	if _ser=2 then --Update address
+	
+		update user_address
+		set addr_datetill = now()
+		where user_id=_userid;
+		
+		insert into user_address (user_id, addr_serial, addr_type_code, addr_line1, addr_line2, addr_line3, 
+								addr_city, addr_state, addr_pincode,addr_country, addr_datetimecreated)
+		values (_userid, _addrserial, _typecode, _line1, _line2, _line3, _city, _state, _pincode,
+			   _country, now()) returning addr_id into _addressId;
+	end if;
+
+end
+$$;
