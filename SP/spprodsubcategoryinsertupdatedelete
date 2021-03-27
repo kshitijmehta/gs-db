@@ -7,7 +7,7 @@ CREATE PROCEDURE public.spprodsubcategoryinsertupdatedelete(_ser integer, _categ
 
     BEGIN
         IF _ser=1 THEN
-            INSERT INTO product_sub_category (prod_category_id,prodsubcategory_name,prodsubcategory_desc)
+            INSERT INTO product_sub_category (prod_category_id,prod_subcategory_name,prod_subcategory_desc)
             VALUES (_categoryid, _name, _desc);
             
         ELSEIF _ser= 2 THEN
