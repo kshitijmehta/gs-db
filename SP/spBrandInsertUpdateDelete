@@ -1,0 +1,29 @@
+CREATE OR REPLACE PROCEDURE spBrandInsertUpdateDelete (
+	  _ser INTEGER
+	, _code VARCHAR(20)
+	, _name VARCHAR(50)
+	, _bid INTEGER DEFAULT NULL::INTEGER
+	)
+	LANGUAGE 'plpgsql'
+	AS $BODY$
+	
+	BEGIN
+		
+		CASE _ser
+		WHEN 1 THEN
+			INSERT INTO ref_brand (brand_code, brand_value)
+				VALUES (_code, _name);
+		
+		WHEN 2 THEN
+			UPDATE ref_brand 
+				SET brand_code = _code,
+					brand_value = _name
+			WHERE brand_id = _bid;
+		
+		WHEN 3 THEN
+			UPDATE ref_brand SET brand_datetill = now() WHERE brand_id = _bid;
+		 ELSE
+      		RAISE EXCEPTION 'Unexpected _ser value: %', _ser;
+   		END CASE;
+	END
+	$BODY$;
