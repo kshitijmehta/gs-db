@@ -1,0 +1,38 @@
+CREATE OR REPLACE PROCEDURE spProductDetailsInsertUpdateDelete(
+	  _ser INTEGER
+	, _sku VARCHAR(20)
+	, _prodid INTEGER
+	, _colourid INTEGER
+	, _name VARCHAR(50)
+	, _desc TEXT
+	, _price NUMERIC(7,2)
+	, _imgpath TEXT DEFAULT NULL::TEXT
+	, INOUT _detailid INTEGER DEFAULT NULL::INTEGER
+)
+
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+
+	BEGIN
+	
+		CASE _ser
+		
+		WHEN 1 THEN --INSERT
+		
+			INSERT INTO product_detail (sku, prod_id, colour_id, prod_detail_name, prod_detail_desc,
+										prod_detail_price, prod_previewimg_path)
+						VALUES (_sku, _prodid, _colourid, _name, _desc, _price, _imgpath)
+						RETURNING prod_detail_id INTO _detailid;
+		WHEN 2 THEN --UPDATE
+		
+			UPDATE product_detail SET (sku, prod_id, colour_id, prod_detail_name, prod_detail_desc,
+										prod_detail_price, prod_previewimg_path)=
+										(_sku, _prodid, _colourid, _name, _desc, _price, _imgpath)
+			WHERE prod_detail_id = _detailid;
+		ELSE
+      		RAISE EXCEPTION 'Unexpected _ser value: %', _ser;
+  		END CASE;
+										
+	END
+$BODY$;
