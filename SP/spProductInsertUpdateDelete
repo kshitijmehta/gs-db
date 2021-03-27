@@ -1,0 +1,33 @@
+CREATE OR REPLACE PROCEDURE spProductInsertUpdateDelete(
+	  _ser INTEGER
+	, _subcategoryid INTEGER
+	, _brandid INTEGER
+	, _stylecode VARCHAR(100)
+	, INOUT _prodid INTEGER DEFAULT NULL::INTEGER
+)
+
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+	BEGIN
+		CASE _ser
+		WHEN 1 THEN --INSERT 
+			INSERT INTO product(prod_subcategory_id,prod_brand_id,prod_stylecode,prod_datetimeinserted)
+						VALUES (_subcategoryid,  _brandid	  , _stylecode,	  now())
+			RETURNING prod_id INTO _prodid;
+		WHEN 2 THEN --UPDATE
+			UPDATE product
+						SET (prod_subcategory_id,prod_brand_id,prod_stylecode)
+						=	(_subcategoryid,  _brandid	  , _stylecode)
+			WHERE prod_id = _prodid;
+		WHEN 3 THEN --DELETE
+			UPDATE product SET prod_datetill = now();
+		
+		ELSE
+			RAISE EXCEPTION 'Unexpected ser value : %',_ser;
+		END CASE;
+		
+			
+			
+	END
+$BODY$;
