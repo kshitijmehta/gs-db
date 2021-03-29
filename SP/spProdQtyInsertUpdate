@@ -1,0 +1,25 @@
+CREATE OR REPLACE PROCEDURE spProdQtyInsertUpdate(
+	  _ser INTEGER
+	, _productdetailid INTEGER
+	, _sizeid INTEGER
+	, _qty INTEGER
+	, _psid INTEGER DEFAULT NULL::INTEGER
+)
+
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+	BEGIN
+		CASE _ser
+		WHEN 1 THEN -- INSERT
+			INSERT INTO product_size (prod_detail_id,size_id,qty)
+				VALUES (_productdetailid,_sizeid, _qty);
+		WHEN 2 THEN -- UPDATE
+			UPDATE product_size SET (prod_detail_id,size_id,qty)
+									=   (_productdetailid,_sizeid, _qty)
+			WHERE ps_id = _psid;
+		ELSE
+      		RAISE EXCEPTION 'Unexpected _ser value: %', _ser;
+   		END CASE;
+	END
+$BODY$;
