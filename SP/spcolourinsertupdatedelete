@@ -5,7 +5,7 @@ CREATE PROCEDURE public.spcolourinsertupdatedelete(_ser integer, _code character
 
 BEGIN
 	IF _ser =1 THEN --Insert Block
-		INSERT INTO ref_colour 
+		INSERT INTO ref_colour (colour_code,colour_value)
 		VALUES(_code, _value);
 	
 	ELSEIF _ser =2 THEN
