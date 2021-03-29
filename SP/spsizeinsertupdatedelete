@@ -13,7 +13,7 @@ BEGIN
 	WHEN 2 THEN --- UPDATE
 		UPDATE ref_size
 		SET (prod_subcategory_id, size_code, size_value)
-		   =(_pcid			 , _code	, _value)
+		   =(_psid			 , _code	, _value)
 		WHERE size_id = _sid;
 	
 	WHEN 3 THEN ---SOFT DELETE
